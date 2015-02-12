@@ -8,10 +8,16 @@ self.on("detach", () => {
 	document.removeEventListener("volumechange", checkNoise, true);
 });
 
+let previous = false;
+checkNoise();
+
 function checkNoise() {
 	let hasNoise = Array.some(
 		document.querySelectorAll("audio, video"),
 		v => !v.paused && v.mozHasAudio && !v.muted && v.volume
 	);
-	self.port.emit("hasNoise", hasNoise);
+	if (previous != hasNoise) {
+		self.port.emit("hasNoise", hasNoise);
+		previous = hasNoise;
+	}
 }
