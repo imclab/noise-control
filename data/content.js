@@ -7,6 +7,9 @@ self.on("detach", () => {
 	document.removeEventListener("pause", checkNoise, true);
 	document.removeEventListener("volumechange", checkNoise, true);
 });
+self.port.on("test", () => {
+	self.port.emit("flub");
+});
 
 let previous = false;
 checkNoise();
