@@ -1,8 +1,10 @@
+document.addEventListener("emptied", checkNoise, true);
 document.addEventListener("play", checkNoise, true);
 document.addEventListener("pause", checkNoise, true);
 document.addEventListener("volumechange", checkNoise, true);
 
 self.on("detach", () => {
+	document.removeEventListener("emptied", checkNoise, true);
 	document.removeEventListener("play", checkNoise, true);
 	document.removeEventListener("pause", checkNoise, true);
 	document.removeEventListener("volumechange", checkNoise, true);
@@ -27,7 +29,7 @@ function checkNoise() {
 
 	let hasNoise = Array.some(
 		elements,
-		v => !v.paused && v.mozHasAudio && (v.muted == tabMuted) && v.volume
+		v => !v.paused && /*v.mozHasAudio &&*/ (v.muted == tabMuted) && v.volume
 	);
 	if (previous != hasNoise) {
 		self.port.emit("hasNoise", hasNoise);
