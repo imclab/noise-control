@@ -1,5 +1,6 @@
 require("./main.js");
 
+const { data } = require("sdk/self");
 const { Cu } = require("chrome");
 const { setTimeout } = require("sdk/timers");
 const tabs = require("sdk/tabs");
@@ -8,16 +9,16 @@ const { viewFor } = require("sdk/view/core");
 
 exports.testBasicAudio = function(test, done) {
 	tabs.open({
-		url: "file:///home/geoff/smush.ogg",
+		url: data.url("").replace("/data/", "/tests/files/audio.html"),
 		onPageShow: function(tab) {
-			basicTest(tab, "video", test, done);
+			basicTest(tab, "audio", test, done);
 		}
 	});
 };
 
 exports.testBasicVideo = function(test, done) {
 	tabs.open({
-		url: "file:///home/geoff/lynx.webm",
+		url: data.url("").replace("/data/", "/tests/files/lynx.webm"),
 		onPageShow: function(tab) {
 			basicTest(tab, "video", test, done);
 		}
