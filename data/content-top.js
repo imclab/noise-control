@@ -28,32 +28,21 @@ function checkNoise() {
 		self.port.emit("unmuted");
 	}
 
-	let hasNoise = checkWindow(window);
-	if (!hasNoise) {
-		hasNoise = checkFrames(window);
-	}
+	let hasNoise = checkWindowAndFrames(window);
 	if (hasNoise != previous) {
 		self.port.emit("hasNoise", hasNoise);
 		previous = hasNoise;
 	}
 }
 
-function checkWindow(win) {
+function checkWindowAndFrames(win) {
 	return Array.some(
 		win.document.querySelectorAll("audio, video"),
 		v => !v.paused && /*v.mozHasAudio &&*/ (v.muted == tabMuted) && v.volume
-	);
-}
-
-function checkFrames(win) {
-	return Array.some(
+	) || Array.some(
 		win.document.querySelectorAll("iframe"),
 		f => checkWindowAndFrames(f.contentWindow)
 	);
-}
-
-function checkWindowAndFrames(win) {
-	return checkWindow(win) || checkFrames(win);
 }
 
 function muteWindowAndFrames(win, muted) {
