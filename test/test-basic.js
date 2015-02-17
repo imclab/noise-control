@@ -7,25 +7,26 @@ const tabs = require("sdk/tabs");
 const { Task } = Cu.import("resource://gre/modules/Task.jsm", {});
 const { viewFor } = require("sdk/view/core");
 
-exports.testBasicAudio = function(test, done) {
-	tabs.open({
-		url: data.url("").replace("/data/", "/tests/files/audio.html"),
-		onPageShow: function(tab) {
-			basicTest(tab, "audio", test, done);
-		}
-	});
+exports.testBasicAudio = function*(test) {
+	let tab = yield openTab(data.url("").replace("/data/", "/tests/files/audio.html"));
+	yield basicTest(tab, "audio", test);
 };
 
-exports.testBasicVideo = function(test, done) {
-	tabs.open({
-		url: data.url("").replace("/data/", "/tests/files/lynx.webm"),
-		onPageShow: function(tab) {
-			basicTest(tab, "video", test, done);
-		}
-	});
+exports.testBasicVideo = function*(test) {
+	let tab = yield openTab(data.url("").replace("/data/", "/tests/files/lynx.webm"));
+	yield basicTest(tab, "video", test);
 };
 
 require("sdk/test").run(exports);
+
+function openTab(url) {
+	return new Promise(function(resolve, reject) {
+		tabs.open({
+			url: url,
+			onPageShow: resolve
+		});
+	});
+}
 
 function wait() {
 	return new Promise(function(resolve, reject) {
@@ -33,8 +34,8 @@ function wait() {
 	});
 }
 
-function basicTest(tab, elementSelector, test, done) {
-	Task.spawn(function*() {
+function basicTest(tab, elementSelector, test) {
+	return Task.spawn(function*() {
 		yield wait();
 
 		let xulTab = viewFor(tab);
@@ -78,6 +79,5 @@ function basicTest(tab, elementSelector, test, done) {
 		test.notEqual(indicator.getAttribute("collapsed"), "true");
 
 		tab.close();
-		done();
 	});
 }
