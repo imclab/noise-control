@@ -10,11 +10,9 @@ self.on("detach", () => {
 	document.removeEventListener("volumechange", checkNoise, true);
 });
 self.port.on("checkNoiseTop", () => {
-	console.log("checkNoiseTop");
 	self.port.emit("hasNoise", checkWindowAndFrames(window));
 });
 self.port.on("mute", muted => {
-	console.log("mute", muted);
 	muteWindowAndFrames(window, muted);
 	tabMuted = muted;
 });
@@ -55,7 +53,6 @@ function checkFrames(win) {
 }
 
 function checkWindowAndFrames(win) {
-	console.log(win.location.href);
 	return checkWindow(win) || checkFrames(win);
 }
 
