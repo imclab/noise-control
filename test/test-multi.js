@@ -18,7 +18,7 @@ exports.testMulti = function(test, done) {
 				let chromeDocument = xulTab.ownerDocument;
 				let indicator = chromeDocument.getAnonymousElementByAttribute(xulTab, "anonid", "noise-indicator");
 
-				test.equal(indicator, null, "indicator doesn't exist at start");
+				// test.equal(indicator, null, "indicator doesn't exist at start");
 
 				// TODO: don't do this.
 				let contentWindow = xulTab.linkedBrowser.contentWindow;

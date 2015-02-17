@@ -9,30 +9,13 @@ self.on("detach", () => {
 	document.removeEventListener("pause", checkNoise, true);
 	document.removeEventListener("volumechange", checkNoise, true);
 });
-self.port.on("mute", muted => {
-	for (let video of document.querySelectorAll("audio, video")) {
-		video.muted = muted;
-	}
-	tabMuted = muted;
-});
 
-let tabMuted = false;
-let previous = false;
 checkNoise();
 
 function checkNoise() {
-	let elements = document.querySelectorAll("audio, video");
-	if (tabMuted && Array.some(elements, v => !v.muted)) {
-		tabMuted = false;
-		self.port.emit("unmuted");
-	}
-
 	let hasNoise = Array.some(
-		elements,
-		v => !v.paused && /*v.mozHasAudio &&*/ (v.muted == tabMuted) && v.volume
+		document.querySelectorAll("audio, video"),
+		v => !v.paused && /*v.mozHasAudio &&*/ !v.muted && v.volume
 	);
-	if (previous != hasNoise) {
-		self.port.emit("hasNoise", hasNoise);
-		previous = hasNoise;
-	}
+	self.port.emit("hasNoiseFrame", hasNoise);
 }
