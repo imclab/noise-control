@@ -23,8 +23,6 @@ exports.testDirect = function*(test) {
 		gotMessage = true;
 	});
 
-	yield waitForMessage("attachedToTop");
-
 	let xulTab = viewFor(worker.tab);
 	let chromeDocument = xulTab.ownerDocument;
 
@@ -48,7 +46,7 @@ function startup() {
 	return new Promise(function(resolve, reject) {
 		require("sdk/page-mod").PageMod({
 			include: ["resource://*"],
-			contentScriptFile: data.url("content.js"),
+			contentScriptFile: data.url("content-top.js"),
 			onAttach: function(worker) {
 				resolve(worker);
 			}
@@ -62,6 +60,6 @@ function startup() {
 
 function wait() {
 	return new Promise(function(resolve, reject) {
-		setTimeout(resolve, 10);
+		setTimeout(resolve, 50);
 	});
 }

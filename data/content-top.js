@@ -20,21 +20,23 @@ self.port.on("mute", muted => {
 });
 
 let tabMuted = false;
-// let previous = false;
+let previous = false;
 checkNoise();
 
 function checkNoise() {
-	// let elements = document.querySelectorAll("audio, video");
-	// if (tabMuted && Array.some(elements, v => !v.muted)) {
-	// 	tabMuted = false;
-	// 	self.port.emit("unmuted");
-	// }
+	let elements = document.querySelectorAll("audio, video");
+	if (tabMuted && Array.some(elements, v => !v.muted)) {
+		tabMuted = false;
+		self.port.emit("unmuted");
+	}
 
 	let hasNoise = checkWindow(window);
-	if (hasNoise) {
+	if (!hasNoise) {
+		hasNoise = checkFrames(window);
+	}
+	if (hasNoise != previous) {
 		self.port.emit("hasNoise", hasNoise);
-	} else {
-		self.port.emit("hasNoise", checkWindowAndFrames(window));
+		previous = hasNoise;
 	}
 }
 
@@ -45,12 +47,16 @@ function checkWindow(win) {
 	);
 }
 
+function checkFrames(win) {
+	return Array.some(
+		win.document.querySelectorAll("iframe"),
+		f => checkWindowAndFrames(f.contentWindow)
+	);
+}
+
 function checkWindowAndFrames(win) {
 	console.log(win.location.href);
-	return checkWindow(win) || Array.some(
-		win.document.querySelectorAll("iframe"),
-		f => checkWindow(f.contentWindow)
-	);
+	return checkWindow(win) || checkFrames(win);
 }
 
 function muteWindowAndFrames(win, muted) {

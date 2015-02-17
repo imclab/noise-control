@@ -29,7 +29,7 @@ require("sdk/test").run(exports);
 
 function wait() {
 	return new Promise(function(resolve, reject) {
-		setTimeout(resolve, 10);
+		setTimeout(resolve, 50);
 	});
 }
 
