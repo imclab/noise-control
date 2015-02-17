@@ -9,12 +9,19 @@ const { viewFor } = require("sdk/view/core");
 
 exports.testMuteAudio = function*(test) {
 	let tab = yield openTab(data.url("").replace("/data/", "/tests/files/audio.html"));
-	yield basicTest(tab, "audio", test);
+	yield basicTest(tab, (doc) => doc.querySelector("audio"), test);
 };
 
 exports.testMuteVideo = function*(test) {
 	let tab = yield openTab(data.url("").replace("/data/", "/tests/files/lynx.webm"));
-	yield basicTest(tab, "video", test);
+	yield basicTest(tab, (doc) => doc.querySelector("video"), test);
+};
+
+exports.testMuteVideoInFrame = function*(test) {
+	let tab = yield openTab(data.url("").replace("/data/", "/tests/files/video-frame.html"));
+	yield basicTest(tab, (doc) => {
+		return doc.querySelector("iframe").contentWindow.document.querySelector("video");
+	}, test);
 };
 
 require("sdk/test").run(exports);
@@ -48,7 +55,7 @@ function basicTest(tab, elementSelector, test) {
 		// TODO: don't do this.
 		let contentWindow = xulTab.linkedBrowser.contentWindow;
 		let contentDocument = contentWindow.document;
-		let video = contentDocument.querySelector(elementSelector);
+		let video = elementSelector(contentDocument);
 
 		test.equal(video.muted, false);
 		indicator.click();
