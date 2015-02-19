@@ -8,9 +8,9 @@ addEventListener("emptied", checkNoise, true);
 addEventListener("play", checkNoise, true);
 addEventListener("pause", checkNoise, true);
 addEventListener("volumechange", checkUnmuted, true);
-addMessageListener("checkNoise", forceCheckNoise);
-addMessageListener("mute", muteListener);
-addMessageListener("disable", disableListener);
+addMessageListener("NoiseControl:checkNoise", forceCheckNoise);
+addMessageListener("NoiseControl:mute", muteListener);
+addMessageListener("NoiseControl:disable", disableListener);
 checkNoise();
 
 function checkNoise() {
@@ -19,14 +19,14 @@ function checkNoise() {
 	}
 	let hasNoise = checkWindowAndFrames(content);
 	if (hasNoise != previous) {
-		sendAsyncMessage("hasNoise", hasNoise);
+		sendAsyncMessage("NoiseControl:hasNoise", hasNoise);
 		previous = hasNoise;
 	}
 }
 
 function checkUnmuted(event) {
 	if (tabMuted && !event.target.muted) {
-		sendAsyncMessage("unmuted");
+		sendAsyncMessage("NoiseControl:unmuted");
 		tabMuted = false;
 		previous = true;
 		return;
@@ -46,7 +46,7 @@ function checkWindowAndFrames(win) {
 
 function forceCheckNoise() {
 	let hasNoise = checkWindowAndFrames(content);
-	sendAsyncMessage("hasNoise", hasNoise);
+	sendAsyncMessage("NoiseControl:hasNoise", hasNoise);
 	previous = hasNoise;
 }
 
@@ -77,7 +77,7 @@ function disableListener()  {
 	removeEventListener("play", checkNoise, true);
 	removeEventListener("pause", checkNoise, true);
 	removeEventListener("volumechange", checkUnmuted, true);
-	removeMessageListener("checkNoise", forceCheckNoise);
-	removeMessageListener("mute", muteListener);
-	removeMessageListener("disable", disableListener);
+	removeMessageListener("NoiseControl:checkNoise", forceCheckNoise);
+	removeMessageListener("NoiseControl:mute", muteListener);
+	removeMessageListener("NoiseControl:disable", disableListener);
 }
