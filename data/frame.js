@@ -1,3 +1,9 @@
+/* global addMessageListener, sendAsyncMessage, content */
+
+let muting = false;
+let tabMuted = false;
+let previous = false;
+
 addEventListener("emptied", checkNoise, true);
 addEventListener("play", checkNoise, true);
 addEventListener("pause", checkNoise, true);
@@ -20,10 +26,6 @@ addMessageListener("mute", message => {
 		tabMuted = muted;
 	}, 0);
 });
-
-let muting = false;
-let tabMuted = false;
-let previous = false;
 checkNoise();
 
 function checkNoise() {

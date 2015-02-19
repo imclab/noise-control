@@ -1,10 +1,8 @@
+/* global exports, require */
+
 require("./main.js");
 
-const { setTimeout } = require("sdk/timers");
-const tabs = require("sdk/tabs");
 const { data } = require("sdk/self");
-const { Cu } = require("chrome");
-const { Task } = Cu.import("resource://gre/modules/Task.jsm", {});
 const { viewFor } = require("sdk/view/core");
 
 exports.testMulti = function*(test) {
@@ -47,8 +45,8 @@ exports.testMulti = function*(test) {
 require("sdk/test").run(exports);
 
 function openTab(url) {
-	return new Promise(function(resolve, reject) {
-		tabs.open({
+	return new Promise(function(resolve) {
+		require("sdk/tabs").open({
 			url: url,
 			onPageShow: resolve
 		});
@@ -56,7 +54,7 @@ function openTab(url) {
 }
 
 function wait() {
-	return new Promise(function(resolve, reject) {
-		setTimeout(resolve, 50);
+	return new Promise(function(resolve) {
+		require("sdk/timers").setTimeout(resolve, 50);
 	});
 }

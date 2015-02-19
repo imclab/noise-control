@@ -1,10 +1,9 @@
+/* global exports, require */
+
 let main = require("./main.js");
 
 const { data } = require("sdk/self");
-const { Cu } = require("chrome");
-const { setTimeout } = require("sdk/timers");
 const tabs = require("sdk/tabs");
-const { Task } = Cu.import("resource://gre/modules/Task.jsm", {});
 const { viewFor } = require("sdk/view/core");
 
 exports.testUnload = function*(test) {
@@ -46,7 +45,7 @@ exports.testUnload = function*(test) {
 require("sdk/test").run(exports);
 
 function wait() {
-	return new Promise(function(resolve, reject) {
-		setTimeout(resolve, 500);
+	return new Promise(function(resolve) {
+		require("sdk/timers").setTimeout(resolve, 500);
 	});
 }
