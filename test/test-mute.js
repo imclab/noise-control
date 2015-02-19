@@ -24,6 +24,44 @@ exports.testMuteVideoInFrame = function*(test) {
 	}, test);
 };
 
+exports.testPauseWhileMuted = function*(test) {
+	let tab = yield openTab(data.url("").replace("/data/", "/tests/files/video-frame.html"));
+
+	yield wait();
+
+	let xulTab = viewFor(tab);
+	let chromeDocument = xulTab.ownerDocument;
+	let indicator = chromeDocument.getAnonymousElementByAttribute(xulTab, "anonid", "noise-indicator");
+
+	// TODO: don't do this.
+	let contentWindow = xulTab.linkedBrowser.contentWindow;
+	let contentDocument = contentWindow.document;
+	let video1 = contentDocument.querySelector("video");
+	let video2 = contentDocument.querySelector("iframe").contentWindow.document.querySelector("video");
+
+	video1.play(); // video2 autoplays.
+
+	yield wait();
+
+	indicator.click();
+	yield wait();
+	test.equal(indicator.classList.contains("muted"), true);
+	test.ok(indicator.getAttribute("src").endsWith("muted.png"));
+	test.notEqual(indicator.getAttribute("collapsed"), "true", "indicator not hidden");
+	test.equal(video1.muted, true);
+	test.equal(video2.muted, true);
+
+	video1.pause();
+	yield wait();
+	test.equal(indicator.classList.contains("muted"), true);
+	test.ok(indicator.getAttribute("src").endsWith("muted.png"));
+	test.notEqual(indicator.getAttribute("collapsed"), "true", "indicator not hidden");
+	test.equal(video1.muted, true);
+	test.equal(video2.muted, true);
+
+	tab.close();
+};
+
 require("sdk/test").run(exports);
 
 function openTab(url) {

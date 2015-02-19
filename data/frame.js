@@ -1,7 +1,7 @@
 addEventListener("emptied", checkNoise, true);
 addEventListener("play", checkNoise, true);
 addEventListener("pause", checkNoise, true);
-addEventListener("volumechange", checkNoise, true);
+addEventListener("volumechange", checkUnmuted, true);
 
 // self.on("detach", () => {
 // 	removeEventListener("emptied", checkNoise, true);
@@ -31,16 +31,20 @@ function checkNoise() {
 		return;
 	}
 	let hasNoise = checkWindowAndFrames(content);
-	if (hasNoise && tabMuted) {
-		sendAsyncMessage("unmuted", hasNoise);
-		tabMuted = false;
-		previous = true;
-		return;
-	}
 	if (hasNoise != previous) {
 		sendAsyncMessage("hasNoise", hasNoise);
 		previous = hasNoise;
 	}
+}
+
+function checkUnmuted(event) {
+	if (tabMuted && !event.target.muted) {
+		sendAsyncMessage("unmuted");
+		tabMuted = false;
+		previous = true;
+		return;
+	}
+	checkNoise();
 }
 
 function checkWindowAndFrames(win) {
