@@ -8,6 +8,7 @@ addEventListener("emptied", checkNoise, true);
 addEventListener("play", checkNoise, true);
 addEventListener("pause", checkNoise, true);
 addEventListener("volumechange", checkUnmuted, true);
+addMessageListener("checkNoise", forceCheckNoise);
 addMessageListener("mute", muteListener);
 addMessageListener("disable", disableListener);
 checkNoise();
@@ -43,6 +44,12 @@ function checkWindowAndFrames(win) {
 	);
 }
 
+function forceCheckNoise() {
+	let hasNoise = checkWindowAndFrames(content);
+	sendAsyncMessage("hasNoise", hasNoise);
+	previous = hasNoise;
+}
+
 function muteListener(message) {
 	let muted = message.data;
 	muting = true;
@@ -70,6 +77,7 @@ function disableListener()  {
 	removeEventListener("play", checkNoise, true);
 	removeEventListener("pause", checkNoise, true);
 	removeEventListener("volumechange", checkUnmuted, true);
+	removeMessageListener("checkNoise", forceCheckNoise);
 	removeMessageListener("mute", muteListener);
 	removeMessageListener("disable", disableListener);
 }
