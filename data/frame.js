@@ -1,4 +1,4 @@
-/* global addMessageListener, sendAsyncMessage, content */
+/* global addMessageListener, removeMessageListener, sendAsyncMessage, content */
 
 let muting = false;
 let tabMuted = false;
@@ -8,24 +8,8 @@ addEventListener("emptied", checkNoise, true);
 addEventListener("play", checkNoise, true);
 addEventListener("pause", checkNoise, true);
 addEventListener("volumechange", checkUnmuted, true);
-
-// self.on("detach", () => {
-// 	removeEventListener("emptied", checkNoise, true);
-// 	removeEventListener("play", checkNoise, true);
-// 	removeEventListener("pause", checkNoise, true);
-// 	removeEventListener("volumechange", checkNoise, true);
-// });
-
-addMessageListener("mute", message => {
-	let muted = message.data;
-	muting = true;
-	muteWindowAndFrames(content, muted);
-
-	setTimeout(function() {
-		muting = false;
-		tabMuted = muted;
-	}, 0);
-});
+addMessageListener("mute", muteListener);
+addMessageListener("disable", disableListener);
 checkNoise();
 
 function checkNoise() {
@@ -59,6 +43,17 @@ function checkWindowAndFrames(win) {
 	);
 }
 
+function muteListener(message) {
+	let muted = message.data;
+	muting = true;
+	muteWindowAndFrames(content, muted);
+
+	setTimeout(function() {
+		muting = false;
+		tabMuted = muted;
+	}, 0);
+}
+
 function muteWindowAndFrames(win, muted) {
 	Array.forEach(
 		win.document.querySelectorAll("audio, video"),
@@ -68,4 +63,13 @@ function muteWindowAndFrames(win, muted) {
 		win.document.querySelectorAll("iframe"),
 		f => muteWindowAndFrames(f.contentWindow, muted)
 	);
+}
+
+function disableListener()  {
+	removeEventListener("emptied", checkNoise, true);
+	removeEventListener("play", checkNoise, true);
+	removeEventListener("pause", checkNoise, true);
+	removeEventListener("volumechange", checkUnmuted, true);
+	removeMessageListener("mute", muteListener);
+	removeMessageListener("disable", disableListener);
 }
