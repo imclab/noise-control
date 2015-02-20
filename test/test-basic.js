@@ -6,6 +6,8 @@ const { data } = require("sdk/self");
 const { Task } = require("chrome").Cu.import("resource://gre/modules/Task.jsm", {});
 const { viewFor } = require("sdk/view/core");
 
+const { openTab, wait } = require("common.js");
+
 exports.testBasicAudio = function*(test) {
 	let tab = yield openTab(data.url("").replace("/data/", "/tests/files/audio.html"));
 	yield basicTest(tab, "audio", test);
@@ -17,21 +19,6 @@ exports.testBasicVideo = function*(test) {
 };
 
 require("sdk/test").run(exports);
-
-function openTab(url) {
-	return new Promise(function(resolve) {
-		require("sdk/tabs").open({
-			url: url,
-			onPageShow: resolve
-		});
-	});
-}
-
-function wait() {
-	return new Promise(function(resolve) {
-		require("sdk/timers").setTimeout(resolve, 50);
-	});
-}
 
 function basicTest(tab, elementSelector, test) {
 	return Task.spawn(function*() {

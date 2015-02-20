@@ -5,6 +5,7 @@ require("./main.js");
 const { data } = require("sdk/self");
 const { viewFor } = require("sdk/view/core");
 
+const { openTab, wait } = require("common.js");
 exports.testMulti = function*(test) {
 	let tab = yield openTab(data.url("").replace("/data/", "/tests/files/multi.html"));
 	yield wait();
@@ -43,18 +44,3 @@ exports.testMulti = function*(test) {
 };
 
 require("sdk/test").run(exports);
-
-function openTab(url) {
-	return new Promise(function(resolve) {
-		require("sdk/tabs").open({
-			url: url,
-			onPageShow: resolve
-		});
-	});
-}
-
-function wait() {
-	return new Promise(function(resolve) {
-		require("sdk/timers").setTimeout(resolve, 50);
-	});
-}

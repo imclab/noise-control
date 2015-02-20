@@ -6,21 +6,13 @@ const { data } = require("sdk/self");
 const tabs = require("sdk/tabs");
 const { viewFor } = require("sdk/view/core");
 
-exports.testUnload = function*(test) {
-	let tabsToClose = [];
+const { openTab, wait } = require("common.js");
 
-	tabs.open({
-		url: data.url("").replace("/data/", "/tests/files/audio.html"),
-		onPageShow: function(tab) {
-			tabsToClose.push(tab);
-		}
-	});
-	tabs.open({
-		url: data.url("").replace("/data/", "/tests/files/lynx.webm"),
-		onPageShow: function(tab) {
-			tabsToClose.push(tab);
-		}
-	});
+exports.testUnload = function*(test) {
+	let tabsToClose = [
+		yield openTab(data.url("").replace("/data/", "/tests/files/audio.html")),
+		yield openTab(data.url("").replace("/data/", "/tests/files/lynx.webm"))
+	];
 
 	yield wait();
 	for (let tab of tabsToClose) {
@@ -29,7 +21,6 @@ exports.testUnload = function*(test) {
 		let indicator = chromeDocument.getAnonymousElementByAttribute(xulTab, "anonid", "noise-indicator");
 
 		test.notEqual(indicator, null, "indicator exists");
-		tab.close();
 	}
 	main.onUnload();
 	for (let tab of tabsToClose) {
@@ -43,9 +34,3 @@ exports.testUnload = function*(test) {
 };
 
 require("sdk/test").run(exports);
-
-function wait() {
-	return new Promise(function(resolve) {
-		require("sdk/timers").setTimeout(resolve, 500);
-	});
-}
