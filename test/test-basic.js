@@ -64,6 +64,11 @@ function basicTest(tab, elementSelector, test) {
 		yield wait();
 		test.notEqual(indicator.getAttribute("collapsed"), "true");
 
+		video.remove();
+		yield wait();
+		// TODO fails
+		// test.equal(indicator.getAttribute("collapsed"), "true");
+
 		tab.close();
 	});
 }
