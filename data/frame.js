@@ -9,6 +9,7 @@ addEventListener("play", checkNoise, true);
 addEventListener("pause", checkNoise, true);
 addEventListener("volumechange", checkUnmuted, true);
 addMessageListener("NoiseControl:checkNoise", forceCheckNoise);
+addMessageListener("NoiseControl:checkPlugins", checkPlugins);
 addMessageListener("NoiseControl:mute", muteListener);
 addMessageListener("NoiseControl:disable", disableListener);
 checkNoise();
@@ -48,6 +49,31 @@ function forceCheckNoise() {
 	let hasNoise = checkWindowAndFrames(content);
 	sendAsyncMessage("NoiseControl:hasNoise", hasNoise);
 	previous = hasNoise;
+}
+
+function checkPlugins(event) {
+	setTimeout(function() {
+		if (!!content) {
+			let hasPlugins = checkWindowAndFramesForPlugins(content);
+			sendAsyncMessage("NoiseControl:hasPlugins", hasPlugins);
+		}
+	}, 0);
+}
+
+function checkWindowAndFramesForPlugins(win) {
+	let hasPlugins = Array.some(
+		win.document.querySelectorAll("object, embed, applet"),
+		p => p.activated
+	);
+
+	if (hasPlugins) {
+		win.addEventListener("pagehide", checkPlugins);
+	}
+
+	return hasPlugins || Array.some(
+		win.document.querySelectorAll("iframe"),
+		f => checkWindowAndFramesForPlugins(f.contentWindow)
+	);
 }
 
 function muteListener(message) {
