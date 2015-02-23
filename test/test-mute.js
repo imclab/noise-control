@@ -47,7 +47,6 @@ exports.testPauseWhileMuted = function*(test) {
 	indicator.click();
 	yield wait();
 	test.equal(indicator.classList.contains("muted"), true);
-	test.ok(indicator.getAttribute("src").endsWith("muted.png"));
 	test.notEqual(indicator.getAttribute("collapsed"), "true", "indicator not hidden");
 	test.equal(video1.muted, true);
 	test.equal(video2.muted, true);
@@ -55,7 +54,6 @@ exports.testPauseWhileMuted = function*(test) {
 	video1.pause();
 	yield wait();
 	test.equal(indicator.classList.contains("muted"), true);
-	test.ok(indicator.getAttribute("src").endsWith("muted.png"));
 	test.notEqual(indicator.getAttribute("collapsed"), "true", "indicator not hidden");
 	test.equal(video1.muted, true);
 	test.equal(video2.muted, true);
@@ -85,14 +83,12 @@ function basicTest(tab, elementSelector, test) {
 		indicator.click();
 		yield wait();
 		test.equal(indicator.classList.contains("muted"), true);
-		test.ok(indicator.getAttribute("src").endsWith("muted.png"));
 		test.notEqual(indicator.getAttribute("collapsed"), "true", "indicator not hidden");
 		test.equal(video.muted, true);
 
 		indicator.click();
 		yield wait();
 		test.equal(indicator.classList.contains("muted"), false);
-		test.ok(indicator.getAttribute("src").endsWith("noisy.png"));
 		test.notEqual(indicator.getAttribute("collapsed"), "true", "indicator not hidden");
 		test.equal(video.muted, false);
 
@@ -101,7 +97,6 @@ function basicTest(tab, elementSelector, test) {
 		video.muted = false;
 		yield wait();
 		test.equal(indicator.classList.contains("muted"), false);
-		test.ok(indicator.getAttribute("src").endsWith("noisy.png"));
 		test.notEqual(indicator.getAttribute("collapsed"), "true", "indicator not hidden");
 
 		tab.close();

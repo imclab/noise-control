@@ -4,6 +4,7 @@ let main = require("./main.js");
 
 const { data } = require("sdk/self");
 const tabs = require("sdk/tabs");
+const windows = require("sdk/windows").browserWindows;
 const { viewFor } = require("sdk/view/core");
 
 const { openTab, wait } = require("common.js");
@@ -30,6 +31,16 @@ exports.testUnload = function*(test) {
 
 		test.equal(indicator, null, "indicator removed");
 		tab.close();
+	}
+
+	for (let sdkWindow of windows) {
+		let chromeWindow = viewFor(sdkWindow);
+		let chromeDocument = chromeWindow.document;
+
+		test.ok(!Array.some(
+			chromeDocument.childNodes,
+			n => n.data && n.data.indexOf("noise-control.css") >= 0
+		));
 	}
 };
 
