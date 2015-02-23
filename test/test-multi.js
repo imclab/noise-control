@@ -26,19 +26,19 @@ exports.testMulti = function*(test) {
 	yield wait();
 	indicator = chromeDocument.getAnonymousElementByAttribute(xulTab, "anonid", "noise-indicator");
 	test.notEqual(indicator, null, "indicator exists");
-	test.notEqual(indicator.getAttribute("collapsed"), "true");
+	test.ok(indicator.classList.contains("noisy"));
 
 	audio.play();
 	yield wait();
-	test.notEqual(indicator.getAttribute("collapsed"), "true");
+	test.ok(indicator.classList.contains("noisy"));
 
 	video.pause();
 	yield wait();
-	test.notEqual(indicator.getAttribute("collapsed"), "true");
+	test.ok(indicator.classList.contains("noisy"));
 
 	audio.pause();
 	yield wait();
-	test.equal(indicator.getAttribute("collapsed"), "true");
+	test.ok(!indicator.classList.contains("noisy"));
 
 	tab.close();
 };

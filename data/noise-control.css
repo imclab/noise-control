@@ -3,15 +3,27 @@ image[anonid="noise-indicator"] {
 	-moz-margin-end: -4px !important;
 	-moz-margin-start: 4px !important;
 	pointer-events: auto;
-	background-image: -moz-image-rect(url("noisy.svg"), 0, 16, 16, 0);
 	list-style-image: none;
+	visibility: collapse;
+}
+image[anonid="noise-indicator"].noisy {
+	background-image: -moz-image-rect(url("noisy.svg"), 0, 16, 16, 0);
+	visibility: visible;
 }
 image[anonid="noise-indicator"].muted {
 	background-image: -moz-image-rect(url("noisy.svg"), 16, 16, 32, 0);
+	visibility: visible;
 }
-#TabsToolbar[brighttext] image[anonid="noise-indicator"]:not([selected]) {
+image[anonid="noise-indicator"].plugins {
+	background-image: -moz-image-rect(url("noisy.svg"), 32, 16, 48, 0);
+	visibility: visible;
+}
+#TabsToolbar[brighttext] image[anonid="noise-indicator"]:not([selected]).noisy {
 	background-image: -moz-image-rect(url("noisy.svg"), 0, 32, 16, 16);
 }
 #TabsToolbar[brighttext] image[anonid="noise-indicator"]:not([selected]).muted {
 	background-image: -moz-image-rect(url("noisy.svg"), 16, 32, 32, 16);
+}
+#TabsToolbar[brighttext] image[anonid="noise-indicator"]:not([selected]).plugins {
+	background-image: -moz-image-rect(url("noisy.svg"), 32, 32, 48, 16);
 }

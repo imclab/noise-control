@@ -10,11 +10,13 @@ exports.testPlugin = function*(test) {
 
 	yield wait();
 	let xulTab = viewFor(tab);
-	test.equal(xulTab.style.backgroundColor, "blue");
+	let chromeDocument = xulTab.ownerDocument;
+	let indicator = chromeDocument.getAnonymousElementByAttribute(xulTab, "anonid", "noise-indicator");
+	test.ok(indicator.classList.contains("plugins"));
 
 	tab.url = data.url("").replace("/data/", "/tests/files/audio.html");
 	yield wait();
-	test.equal(xulTab.style.backgroundColor, "");
+	test.ok(!indicator.classList.contains("plugins"));
 
 	tab.close();
 };
@@ -24,7 +26,9 @@ exports.testPluginRemovedFromDOM = function*(test) {
 
 	yield wait();
 	let xulTab = viewFor(tab);
-	test.equal(xulTab.style.backgroundColor, "blue");
+	let chromeDocument = xulTab.ownerDocument;
+	let indicator = chromeDocument.getAnonymousElementByAttribute(xulTab, "anonid", "noise-indicator");
+	test.ok(indicator.classList.contains("plugins"));
 
 	// TODO: don't do this.
 	let contentWindow = xulTab.linkedBrowser.contentWindow;
@@ -33,7 +37,7 @@ exports.testPluginRemovedFromDOM = function*(test) {
 	plugin.remove();
 
 	yield wait(100);
-	test.equal(xulTab.style.backgroundColor, "");
+	test.ok(!indicator.classList.contains("plugins"));
 
 	tab.close();
 };
@@ -43,7 +47,9 @@ exports.testPluginInFrame = function*(test) {
 
 	yield wait();
 	let xulTab = viewFor(tab);
-	test.equal(xulTab.style.backgroundColor, "blue");
+	let chromeDocument = xulTab.ownerDocument;
+	let indicator = chromeDocument.getAnonymousElementByAttribute(xulTab, "anonid", "noise-indicator");
+	test.ok(indicator.classList.contains("plugins"));
 
 	// TODO: don't do this.
 	let contentWindow = xulTab.linkedBrowser.contentWindow;
@@ -52,7 +58,7 @@ exports.testPluginInFrame = function*(test) {
 
 	frame.src = data.url("").replace("/data/", "/tests/files/audio.html");
 	yield wait(100);
-	test.equal(xulTab.style.backgroundColor, "");
+	test.ok(!indicator.classList.contains("plugins"));
 
 	tab.close();
 };
@@ -62,11 +68,13 @@ exports.testPluginInFrame2 = function*(test) {
 
 	yield wait();
 	let xulTab = viewFor(tab);
-	test.equal(xulTab.style.backgroundColor, "blue");
+	let chromeDocument = xulTab.ownerDocument;
+	let indicator = chromeDocument.getAnonymousElementByAttribute(xulTab, "anonid", "noise-indicator");
+	test.ok(indicator.classList.contains("plugins"));
 
 	tab.url = data.url("").replace("/data/", "/tests/files/audio.html");
 	yield wait();
-	test.equal(xulTab.style.backgroundColor, "");
+	test.ok(!indicator.classList.contains("plugins"));
 
 	tab.close();
 };

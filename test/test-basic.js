@@ -29,7 +29,7 @@ function basicTest(tab, elementSelector, test) {
 		let indicator = chromeDocument.getAnonymousElementByAttribute(xulTab, "anonid", "noise-indicator");
 
 		test.notEqual(indicator, null, "indicator exists");
-		test.notEqual(indicator.getAttribute("collapsed"), "true", "indicator is shown");
+		test.ok(indicator.classList.contains("noisy"), "indicator is shown");
 
 		// TODO: don't do this.
 		let contentWindow = xulTab.linkedBrowser.contentWindow;
@@ -38,36 +38,36 @@ function basicTest(tab, elementSelector, test) {
 
 		video.pause();
 		yield wait();
-		test.equal(indicator.getAttribute("collapsed"), "true");
+		test.ok(!indicator.classList.contains("noisy"));
 
 		video.play();
 		yield wait();
-		test.notEqual(indicator.getAttribute("collapsed"), "true");
+		test.ok(indicator.classList.contains("noisy"));
 
 		video.muted = true;
 		yield wait();
-		test.equal(indicator.getAttribute("collapsed"), "true");
+		test.ok(!indicator.classList.contains("noisy"));
 
 		video.muted = false;
 		yield wait();
-		test.notEqual(indicator.getAttribute("collapsed"), "true");
+		test.ok(indicator.classList.contains("noisy"));
 
 		video.volume = 0.5;
 		yield wait();
-		test.notEqual(indicator.getAttribute("collapsed"), "true");
+		test.ok(indicator.classList.contains("noisy"));
 
 		video.volume = 0;
 		yield wait();
-		test.equal(indicator.getAttribute("collapsed"), "true");
+		test.ok(!indicator.classList.contains("noisy"));
 
 		video.volume = 1;
 		yield wait();
-		test.notEqual(indicator.getAttribute("collapsed"), "true");
+		test.ok(indicator.classList.contains("noisy"));
 
 		video.remove();
 		yield wait();
 		// TODO fails
-		// test.equal(indicator.getAttribute("collapsed"), "true");
+		// test.ok(!indicator.classList.contains("noisy"));
 
 		tab.close();
 	});
