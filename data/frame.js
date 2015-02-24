@@ -36,13 +36,33 @@ function checkUnmuted(event) {
 }
 
 function checkWindowAndFrames(win) {
-	return Array.some(
+	let hasMedia = Array.some(
 		win.document.querySelectorAll("audio, video"),
 		v => !v.paused && /*v.mozHasAudio &&*/ ((v.muted && tabMuted) || !v.muted) && v.volume
-	) || Array.some(
+	);
+
+	if (hasMedia) {
+		new win.MutationObserver(onMutation).observe(win.document.documentElement, {
+			childList: true,
+			subtree: true
+		});
+	}
+
+	return hasMedia || Array.some(
 		win.document.querySelectorAll("iframe"),
 		f => checkWindowAndFrames(f.contentWindow)
 	);
+}
+
+function onMutation(mutations) {
+	for (let m of mutations) {
+		for (let n of m.removedNodes) {
+			if (n.matches("audio, video") || n.querySelector("audio, video")) {
+				checkNoise();
+				return;
+			}
+		}
+	}
 }
 
 function forceCheckNoise() {
