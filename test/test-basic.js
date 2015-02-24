@@ -66,7 +66,6 @@ function basicTest(tab, elementSelector, test) {
 
 		video.remove();
 		yield wait();
-		// TODO fails
 		test.ok(!indicator.classList.contains("noisy"));
 
 		tab.close();
