@@ -51,7 +51,7 @@ function forceCheckNoise() {
 	previous = hasNoise;
 }
 
-function checkPlugins(event) {
+function checkPlugins() {
 	setTimeout(function() {
 		if (!!content) {
 			let hasPlugins = checkWindowAndFramesForPlugins(content);

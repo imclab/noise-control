@@ -6,6 +6,7 @@ image[anonid="noise-indicator"] {
 	list-style-image: none;
 	visibility: collapse;
 }
+
 image[anonid="noise-indicator"].noisy {
 	background-image: -moz-image-rect(url("noisy.svg"), 0, 16, 16, 0);
 	visibility: visible;
@@ -18,12 +19,26 @@ image[anonid="noise-indicator"].plugins {
 	background-image: -moz-image-rect(url("noisy.svg"), 32, 16, 48, 0);
 	visibility: visible;
 }
-#TabsToolbar[brighttext] image[anonid="noise-indicator"]:not([selected]).noisy {
+
+image[anonid="noise-indicator"][osx].noisy {
 	background-image: -moz-image-rect(url("noisy.svg"), 0, 32, 16, 16);
 }
-#TabsToolbar[brighttext] image[anonid="noise-indicator"]:not([selected]).muted {
+image[anonid="noise-indicator"][osx].muted {
 	background-image: -moz-image-rect(url("noisy.svg"), 16, 32, 32, 16);
 }
-#TabsToolbar[brighttext] image[anonid="noise-indicator"]:not([selected]).plugins {
+image[anonid="noise-indicator"][osx].plugins {
 	background-image: -moz-image-rect(url("noisy.svg"), 32, 32, 48, 16);
+}
+image[anonid="noise-indicator"][osx]:not([selected]) {
+	opacity: 0.7 !important;
+}
+
+#TabsToolbar[brighttext] image[anonid="noise-indicator"]:not([selected]).noisy {
+	background-image: -moz-image-rect(url("noisy.svg"), 0, 48, 16, 32);
+}
+#TabsToolbar[brighttext] image[anonid="noise-indicator"]:not([selected]).muted {
+	background-image: -moz-image-rect(url("noisy.svg"), 16, 48, 32, 32);
+}
+#TabsToolbar[brighttext] image[anonid="noise-indicator"]:not([selected]).plugins {
+	background-image: -moz-image-rect(url("noisy.svg"), 32, 48, 48, 32);
 }
