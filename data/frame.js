@@ -5,6 +5,7 @@ let tabMuted = false;
 let previous = false;
 
 addEventListener("emptied", checkNoise, true);
+addEventListener("loadeddata", checkNoise, true)
 addEventListener("play", checkNoise, true);
 addEventListener("pause", checkNoise, true);
 addEventListener("volumechange", checkUnmuted, true);
@@ -38,7 +39,7 @@ function checkUnmuted(event) {
 function checkWindowAndFrames(win) {
 	let hasMedia = Array.some(
 		win.document.querySelectorAll("audio, video"),
-		v => !v.paused && /*v.mozHasAudio &&*/ ((v.muted && tabMuted) || !v.muted) && v.volume
+		v => !v.paused && (!("mozHasAudio" in v) || v.mozHasAudio) && ((v.muted && tabMuted) || !v.muted) && v.volume
 	);
 
 	if (hasMedia) {
@@ -57,7 +58,8 @@ function checkWindowAndFrames(win) {
 function onMutation(mutations) {
 	for (let m of mutations) {
 		for (let n of m.removedNodes) {
-			if (n.matches("audio, video") || n.querySelector("audio, video")) {
+			if (("matches" in n && n.matches("audio, video")) ||
+					("querySelector" in n && n.querySelector("audio, video"))) {
 				checkNoise();
 				return;
 			}
@@ -69,6 +71,8 @@ function forceCheckNoise() {
 	let hasNoise = checkWindowAndFrames(content);
 	sendAsyncMessage("NoiseControl:hasNoise", hasNoise);
 	previous = hasNoise;
+
+	checkPlugins();
 }
 
 function checkPlugins() {
@@ -120,6 +124,7 @@ function muteWindowAndFrames(win, muted) {
 
 function disableListener()  {
 	removeEventListener("emptied", checkNoise, true);
+	removeEventListener("loadeddata", checkNoise, true)
 	removeEventListener("play", checkNoise, true);
 	removeEventListener("pause", checkNoise, true);
 	removeEventListener("volumechange", checkUnmuted, true);
