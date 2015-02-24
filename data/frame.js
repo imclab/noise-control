@@ -5,7 +5,7 @@ let tabMuted = false;
 let previous = false;
 
 addEventListener("emptied", checkNoise, true);
-addEventListener("loadeddata", checkNoise, true)
+addEventListener("loadeddata", checkNoise, true);
 addEventListener("play", checkNoise, true);
 addEventListener("pause", checkNoise, true);
 addEventListener("volumechange", checkUnmuted, true);
@@ -43,13 +43,27 @@ function checkWindowAndFrames(win) {
 	);
 
 	if (hasMedia) {
-		new win.MutationObserver(onMutation).observe(win.document.documentElement, {
+		let mediaObserver = new win.MutationObserver(onMutation);
+		mediaObserver.lookFor = "audio, video";
+		mediaObserver.observe(win.document.documentElement, {
 			childList: true,
 			subtree: true
 		});
+
+		if (win != win.top) {
+			let parent = win.parent;
+			let iframeObserver = new parent.MutationObserver(onMutation);
+			iframeObserver.lookFor = "iframe";
+			iframeObserver.observe(parent.document.documentElement, {
+				childList: true,
+				subtree: true
+			});
+		}
+
+		return true;
 	}
 
-	return hasMedia || Array.some(
+	return Array.some(
 		win.document.querySelectorAll("iframe"),
 		f => checkWindowAndFrames(f.contentWindow)
 	);
@@ -58,8 +72,8 @@ function checkWindowAndFrames(win) {
 function onMutation(mutations) {
 	for (let m of mutations) {
 		for (let n of m.removedNodes) {
-			if (("matches" in n && n.matches("audio, video")) ||
-					("querySelector" in n && n.querySelector("audio, video"))) {
+			if (("matches" in n && n.matches(this.lookFor)) ||
+					("querySelector" in n && n.querySelector(this.lookFor))) {
 				checkNoise();
 				return;
 			}
@@ -124,7 +138,7 @@ function muteWindowAndFrames(win, muted) {
 
 function disableListener()  {
 	removeEventListener("emptied", checkNoise, true);
-	removeEventListener("loadeddata", checkNoise, true)
+	removeEventListener("loadeddata", checkNoise, true);
 	removeEventListener("play", checkNoise, true);
 	removeEventListener("pause", checkNoise, true);
 	removeEventListener("volumechange", checkUnmuted, true);
