@@ -1,12 +1,11 @@
-require("./main.js");
+require("../lib/main.js");
 
-const { data } = require("sdk/self");
 const { viewFor } = require("sdk/view/core");
 
-const { openTab, wait } = require("common.js");
+const { openTab, url, wait } = require("./common.js");
 
 exports.testPlugin = function*(test) {
-	let tab = yield openTab(data.url("").replace("/data/", "/tests/files/embed.html"));
+	let tab = yield openTab(url("/test/files/embed.html"));
 
 	yield wait();
 	let xulTab = viewFor(tab);
@@ -14,7 +13,7 @@ exports.testPlugin = function*(test) {
 	let indicator = chromeDocument.getAnonymousElementByAttribute(xulTab, "anonid", "noise-indicator");
 	test.ok(indicator.classList.contains("plugins"));
 
-	tab.url = data.url("").replace("/data/", "/tests/files/audio.html");
+	tab.url = url("/test/files/audio.html");
 	yield wait();
 	test.ok(!indicator.classList.contains("plugins"));
 
@@ -22,7 +21,7 @@ exports.testPlugin = function*(test) {
 };
 
 exports.testPluginRemovedFromDOM = function*(test) {
-	let tab = yield openTab(data.url("").replace("/data/", "/tests/files/embed.html"));
+	let tab = yield openTab(url("/test/files/embed.html"));
 
 	yield wait();
 	let xulTab = viewFor(tab);
@@ -43,7 +42,7 @@ exports.testPluginRemovedFromDOM = function*(test) {
 };
 
 exports.testPluginInFrame = function*(test) {
-	let tab = yield openTab(data.url("").replace("/data/", "/tests/files/embed-frame.html"));
+	let tab = yield openTab(url("/test/files/embed-frame.html"));
 
 	yield wait();
 	let xulTab = viewFor(tab);
@@ -56,7 +55,7 @@ exports.testPluginInFrame = function*(test) {
 	let contentDocument = contentWindow.document;
 	let frame = contentDocument.querySelector("iframe");
 
-	frame.src = data.url("").replace("/data/", "/tests/files/audio.html");
+	frame.src = url("/test/files/audio.html");
 	yield wait(100);
 	test.ok(!indicator.classList.contains("plugins"));
 
@@ -64,7 +63,7 @@ exports.testPluginInFrame = function*(test) {
 };
 
 exports.testPluginInFrame2 = function*(test) {
-	let tab = yield openTab(data.url("").replace("/data/", "/tests/files/embed-frame.html"));
+	let tab = yield openTab(url("/test/files/embed-frame.html"));
 
 	yield wait();
 	let xulTab = viewFor(tab);
@@ -72,7 +71,7 @@ exports.testPluginInFrame2 = function*(test) {
 	let indicator = chromeDocument.getAnonymousElementByAttribute(xulTab, "anonid", "noise-indicator");
 	test.ok(indicator.classList.contains("plugins"));
 
-	tab.url = data.url("").replace("/data/", "/tests/files/audio.html");
+	tab.url = url("/test/files/audio.html");
 	yield wait();
 	test.ok(!indicator.classList.contains("plugins"));
 

@@ -1,16 +1,14 @@
 /* global exports, require */
 
-require("./main.js");
+require("../lib/main.js");
 
-const { data } = require("sdk/self");
 const { viewFor } = require("sdk/view/core");
 
-const { openTab, wait } = require("common.js");
-
+const { openTab, url, wait } = require("./common.js");
 
 exports.testSilent = function*(test) {
 
-	let tab = yield openTab(data.url("").replace("/data/", "/tests/files/silent.webm"));
+	let tab = yield openTab(url("/test/files/silent.webm"));
 	yield wait();
 
 	let xulTab = viewFor(tab);

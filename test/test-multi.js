@@ -1,13 +1,13 @@
 /* global exports, require */
 
-require("./main.js");
+require("../lib/main.js");
 
-const { data } = require("sdk/self");
 const { viewFor } = require("sdk/view/core");
 
-const { openTab, wait } = require("common.js");
+const { openTab, url, wait } = require("./common.js");
+
 exports.testMulti = function*(test) {
-	let tab = yield openTab(data.url("").replace("/data/", "/tests/files/multi.html"));
+	let tab = yield openTab(url("/test/files/multi.html"));
 	yield wait();
 
 	let xulTab = viewFor(tab);

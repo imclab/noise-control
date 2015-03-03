@@ -1,14 +1,13 @@
 /* global require, exports */
 
-require("./main.js");
+require("../lib/main.js");
 
-const { data } = require("sdk/self");
 const { viewFor } = require("sdk/view/core");
 
-const { openTab, wait } = require("common.js");
+const { openTab, url, wait } = require("./common.js");
 
 exports.testVideoInFrame = function*(test) {
-	let tab = yield openTab(data.url("").replace("/data/", "/tests/files/video-frame.html"));
+	let tab = yield openTab(url("/test/files/video-frame.html"));
 
 	yield wait();
 	let xulTab = viewFor(tab);
@@ -29,7 +28,7 @@ exports.testVideoInFrame = function*(test) {
 };
 
 exports.testPluginInFrame = function*(test) {
-	let tab = yield openTab(data.url("").replace("/data/", "/tests/files/embed-frame.html"));
+	let tab = yield openTab(url("/test/files/embed-frame.html"));
 
 	yield wait();
 	let xulTab = viewFor(tab);

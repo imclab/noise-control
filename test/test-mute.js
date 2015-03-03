@@ -1,32 +1,31 @@
 /* global exports, require */
 
-require("./main.js");
+require("../lib/main.js");
 
-const { data } = require("sdk/self");
 const { Task } = require("chrome").Cu.import("resource://gre/modules/Task.jsm", {});
 const { viewFor } = require("sdk/view/core");
 
-const { openTab, wait } = require("common.js");
+const { openTab, url, wait } = require("./common.js");
 
 exports.testMuteAudio = function*(test) {
-	let tab = yield openTab(data.url("").replace("/data/", "/tests/files/audio.html"));
+	let tab = yield openTab(url("/test/files/audio.html"));
 	yield basicTest(tab, (doc) => doc.querySelector("audio"), test);
 };
 
 exports.testMuteVideo = function*(test) {
-	let tab = yield openTab(data.url("").replace("/data/", "/tests/files/lynx.webm"));
+	let tab = yield openTab(url("/test/files/lynx.webm"));
 	yield basicTest(tab, (doc) => doc.querySelector("video"), test);
 };
 
 exports.testMuteVideoInFrame = function*(test) {
-	let tab = yield openTab(data.url("").replace("/data/", "/tests/files/video-frame.html"));
+	let tab = yield openTab(url("/test/files/video-frame.html"));
 	yield basicTest(tab, (doc) => {
 		return doc.querySelector("iframe").contentWindow.document.querySelector("video");
 	}, test);
 };
 
 exports.testPauseWhileMuted = function*(test) {
-	let tab = yield openTab(data.url("").replace("/data/", "/tests/files/video-frame.html"));
+	let tab = yield openTab(url("/test/files/video-frame.html"));
 
 	yield wait();
 
