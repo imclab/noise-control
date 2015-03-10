@@ -24,6 +24,18 @@ function checkNoise() {
 		sendAsyncMessage("NoiseControl:hasNoise", hasNoise);
 		previous = hasNoise;
 	}
+	if (hasNoise) {
+		addEventListener("pagehide", checkUnloaded, true);
+	}
+}
+
+function checkUnloaded(event) {
+	let targetWindow = event.target.ownerGlobal;
+	if (targetWindow == targetWindow.top) {
+		sendAsyncMessage("NoiseControl:unloaded");
+		previous = false;
+		tabMuted = false;
+	}
 }
 
 function checkUnmuted(event) {
@@ -141,6 +153,7 @@ function disableListener()  {
 	removeEventListener("loadeddata", checkNoise, true);
 	removeEventListener("play", checkNoise, true);
 	removeEventListener("pause", checkNoise, true);
+	removeEventListener("pagehide", checkUnloaded, true);
 	removeEventListener("volumechange", checkUnmuted, true);
 	removeMessageListener("NoiseControl:checkNoise", forceCheckNoise);
 	removeMessageListener("NoiseControl:mute", muteListener);
