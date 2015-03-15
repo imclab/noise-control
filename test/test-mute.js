@@ -5,6 +5,7 @@ require("./main.js");
 const { data } = require("sdk/self");
 const { Task } = require("chrome").Cu.import("resource://gre/modules/Task.jsm", {});
 const { viewFor } = require("sdk/view/core");
+const { Ci } = require("chrome");
 
 const { openTab, wait } = require("common.js");
 
@@ -42,6 +43,8 @@ exports.testPauseWhileMuted = function*(test) {
 	let video1 = contentDocument.querySelector("video");
 	let video2 = contentDocument.querySelector("iframe").contentWindow.document.querySelector("video");
 
+	let windowUtils = contentWindow.QueryInterface(Ci.nsIInterfaceRequestor).getInterface(Ci.nsIDOMWindowUtils);
+
 	video1.play(); // video2 autoplays.
 
 	yield wait();
@@ -49,18 +52,18 @@ exports.testPauseWhileMuted = function*(test) {
 	doClick(indicator);
 	yield wait();
 	test.equal(indicator.classList.contains("muted"), true);
-	test.equal(indicator.classList.contains("noisy"), true);
-	test.equal(indicatorStyle.visibility, "visible", "indicator not hidden");
-	test.equal(video1.muted, true);
-	test.equal(video2.muted, true);
+	test.notEqual(indicator.getAttribute("collapsed"), "true", "indicator not hidden");
+	test.equal(windowUtils.audioMuted, true);
+	test.equal(video1.muted, false);
+	test.equal(video2.muted, false);
 
 	video1.pause();
 	yield wait();
 	test.equal(indicator.classList.contains("muted"), true);
-	test.equal(indicator.classList.contains("noisy"), true);
-	test.equal(indicatorStyle.visibility, "visible", "indicator not hidden");
-	test.equal(video1.muted, true);
-	test.equal(video2.muted, true);
+	test.notEqual(indicator.getAttribute("collapsed"), "true", "indicator not hidden");
+	test.equal(windowUtils.audioMuted, true);
+	test.equal(video1.muted, false);
+	test.equal(video2.muted, false);
 
 	tab.close();
 };
@@ -139,28 +142,30 @@ function basicTest(tab, elementSelector, test) {
 		let contentDocument = contentWindow.document;
 		let video = elementSelector(contentDocument);
 
+		let windowUtils = contentWindow.QueryInterface(Ci.nsIInterfaceRequestor).getInterface(Ci.nsIDOMWindowUtils);
+
 		test.equal(video.muted, false);
 		doClick(indicator);
 		yield wait();
 		test.equal(indicator.classList.contains("muted"), true);
-		test.equal(indicator.classList.contains("noisy"), true);
-		test.equal(indicatorStyle.visibility, "visible", "indicator not hidden");
-		test.equal(video.muted, true);
+		test.notEqual(indicator.getAttribute("collapsed"), "true", "indicator not hidden");
+		test.equal(windowUtils.audioMuted, true);
+		test.equal(video.muted, false);
 
 		doClick(indicator);
 		yield wait();
 		test.equal(indicator.classList.contains("muted"), false);
-		test.equal(indicator.classList.contains("noisy"), true);
-		test.equal(indicatorStyle.visibility, "visible", "indicator not hidden");
+		test.notEqual(indicator.getAttribute("collapsed"), "true", "indicator not hidden");
+		test.equal(windowUtils.audioMuted, false);
 		test.equal(video.muted, false);
 
 		doClick(indicator);
 		yield wait();
 		video.muted = false;
 		yield wait();
-		test.equal(indicator.classList.contains("muted"), false);
-		test.equal(indicator.classList.contains("noisy"), true);
-		test.equal(indicatorStyle.visibility, "visible", "indicator not hidden");
+		test.equal(indicator.classList.contains("muted"), true);
+		test.notEqual(indicator.getAttribute("collapsed"), "true", "indicator not hidden");
+		test.equal(windowUtils.audioMuted, true);
 
 		tab.close();
 	});
