@@ -1,44 +1,25 @@
-image[anonid="noise-indicator"] {
+svg[anonid="noise-indicator"] {
 	display: -moz-box !important;
 	-moz-margin-end: -4px !important;
 	-moz-margin-start: 4px !important;
 	pointer-events: auto;
 	list-style-image: none;
 	visibility: collapse;
+	width: 16px;
+	height: 16px;
 }
-
-image[anonid="noise-indicator"].noisy {
-	background-image: -moz-image-rect(url("noisy.svg"), 0, 16, 16, 0);
-	visibility: visible;
-}
-image[anonid="noise-indicator"].muted {
-	background-image: -moz-image-rect(url("noisy.svg"), 16, 16, 32, 0);
-	visibility: visible;
-}
-image[anonid="noise-indicator"].plugins {
-	background-image: -moz-image-rect(url("noisy.svg"), 32, 16, 48, 0);
+svg[anonid="noise-indicator"].noisy,
+svg[anonid="noise-indicator"].muted,
+svg[anonid="noise-indicator"].plugins {
 	visibility: visible;
 }
 
-image[anonid="noise-indicator"][osx].noisy {
-	background-image: -moz-image-rect(url("noisy.svg"), 0, 32, 16, 16);
+svg[anonid="noise-indicator"] > use {
+	fill: currentcolor;
 }
-image[anonid="noise-indicator"][osx].muted {
-	background-image: -moz-image-rect(url("noisy.svg"), 16, 32, 32, 16);
+svg[anonid="noise-indicator"].muted > use {
+	transform: translate(0, -16px);
 }
-image[anonid="noise-indicator"][osx].plugins {
-	background-image: -moz-image-rect(url("noisy.svg"), 32, 32, 48, 16);
-}
-image[anonid="noise-indicator"][osx]:not([selected]) {
-	opacity: 0.7 !important;
-}
-
-#TabsToolbar[brighttext] image[anonid="noise-indicator"]:not([selected]).noisy {
-	background-image: -moz-image-rect(url("noisy.svg"), 0, 48, 16, 32);
-}
-#TabsToolbar[brighttext] image[anonid="noise-indicator"]:not([selected]).muted {
-	background-image: -moz-image-rect(url("noisy.svg"), 16, 48, 32, 32);
-}
-#TabsToolbar[brighttext] image[anonid="noise-indicator"]:not([selected]).plugins {
-	background-image: -moz-image-rect(url("noisy.svg"), 32, 48, 48, 32);
+svg[anonid="noise-indicator"].plugins > use {
+	transform: translate(0, -32px);
 }

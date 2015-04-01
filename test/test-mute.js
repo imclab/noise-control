@@ -44,7 +44,7 @@ exports.testPauseWhileMuted = function*(test) {
 
 	yield wait();
 
-	indicator.click();
+	doClick(indicator);
 	yield wait();
 	test.equal(indicator.classList.contains("muted"), true);
 	test.notEqual(indicator.getAttribute("collapsed"), "true", "indicator not hidden");
@@ -80,19 +80,19 @@ function basicTest(tab, elementSelector, test) {
 		let video = elementSelector(contentDocument);
 
 		test.equal(video.muted, false);
-		indicator.click();
+		doClick(indicator);
 		yield wait();
 		test.equal(indicator.classList.contains("muted"), true);
 		test.notEqual(indicator.getAttribute("collapsed"), "true", "indicator not hidden");
 		test.equal(video.muted, true);
 
-		indicator.click();
+		doClick(indicator);
 		yield wait();
 		test.equal(indicator.classList.contains("muted"), false);
 		test.notEqual(indicator.getAttribute("collapsed"), "true", "indicator not hidden");
 		test.equal(video.muted, false);
 
-		indicator.click();
+		doClick(indicator);
 		yield wait();
 		video.muted = false;
 		yield wait();
@@ -101,4 +101,9 @@ function basicTest(tab, elementSelector, test) {
 
 		tab.close();
 	});
+}
+
+function doClick(indicator) {
+	let event = new indicator.ownerDocument.defaultView.MouseEvent("click", { button: 0, detail: 1 });
+	indicator.dispatchEvent(event);
 }
