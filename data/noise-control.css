@@ -5,8 +5,6 @@ svg[anonid="noise-indicator"] {
 	pointer-events: auto;
 	list-style-image: none;
 	visibility: collapse;
-	width: 16px;
-	height: 16px;
 }
 svg[anonid="noise-indicator"].noisy,
 svg[anonid="noise-indicator"].muted,
