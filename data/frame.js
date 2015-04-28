@@ -51,7 +51,7 @@ function checkUnmuted(event) {
 function checkWindowAndFrames(win) {
 	let hasMedia = Array.some(
 		win.document.querySelectorAll("audio, video"),
-		v => !v.paused && (!("mozHasAudio" in v) || v.mozHasAudio) && ((v.muted && tabMuted) || !v.muted) && v.volume
+		v => !v.paused && (!("mozHasAudio" in v) || v.mozHasAudio) && ((v.muted && tabMuted) || !v.muted) && v.volume && !v.error
 	);
 
 	if (hasMedia) {
