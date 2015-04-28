@@ -104,6 +104,6 @@ function basicTest(tab, elementSelector, test) {
 }
 
 function doClick(indicator) {
-	let event = new indicator.ownerDocument.defaultView.MouseEvent("click", { button: 0, detail: 1 });
+	let event = new indicator.ownerDocument.defaultView.MouseEvent("mousedown", { button: 0, detail: 1 });
 	indicator.dispatchEvent(event);
 }
