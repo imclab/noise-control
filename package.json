@@ -9,8 +9,8 @@
 	"main": "lib/main.js",
 	"preferences": [
 		{
-			"name": "indicator.color",
-			"title": "Indicator Color",
+			"name": "indicator.colour",
+			"title": "Indicator Colour",
 			"type": "color",
 			"value": "currentcolor"
 		}
