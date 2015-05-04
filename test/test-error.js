@@ -6,7 +6,7 @@ const { data } = require("sdk/self");
 const { viewFor } = require("sdk/view/core");
 
 const { openTab, wait } = require("common.js");
-exports.testMulti = function*(test) {
+exports.testError = function*(test) {
 	let tab = yield openTab(data.url("").replace("/data/", "/tests/files/audio-error.html"));
 	yield wait();
 
