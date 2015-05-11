@@ -32,7 +32,9 @@ exports.testPauseWhileMuted = function*(test) {
 
 	let xulTab = viewFor(tab);
 	let chromeDocument = xulTab.ownerDocument;
+	let chromeWindow = chromeDocument.defaultView;
 	let indicator = chromeDocument.getAnonymousElementByAttribute(xulTab, "anonid", "noise-indicator");
+	let indicatorStyle = chromeWindow.getComputedStyle(indicator);
 
 	// TODO: don't do this.
 	let contentWindow = xulTab.linkedBrowser.contentWindow;
@@ -47,16 +49,70 @@ exports.testPauseWhileMuted = function*(test) {
 	doClick(indicator);
 	yield wait();
 	test.equal(indicator.classList.contains("muted"), true);
-	test.notEqual(indicator.getAttribute("collapsed"), "true", "indicator not hidden");
+	test.equal(indicator.classList.contains("noisy"), true);
+	test.equal(indicatorStyle.visibility, "visible", "indicator not hidden");
 	test.equal(video1.muted, true);
 	test.equal(video2.muted, true);
 
 	video1.pause();
 	yield wait();
 	test.equal(indicator.classList.contains("muted"), true);
-	test.notEqual(indicator.getAttribute("collapsed"), "true", "indicator not hidden");
+	test.equal(indicator.classList.contains("noisy"), true);
+	test.equal(indicatorStyle.visibility, "visible", "indicator not hidden");
 	test.equal(video1.muted, true);
 	test.equal(video2.muted, true);
+
+	tab.close();
+};
+
+exports.testPauseWhileMuted2 = function*(test) {
+	let tab = yield openTab(data.url("").replace("/data/", "/tests/files/audio.html"));
+
+	yield wait();
+
+	let xulTab = viewFor(tab);
+	let chromeDocument = xulTab.ownerDocument;
+	let chromeWindow = chromeDocument.defaultView;
+	let indicator = chromeDocument.getAnonymousElementByAttribute(xulTab, "anonid", "noise-indicator");
+	let indicatorStyle = chromeWindow.getComputedStyle(indicator);
+
+	// TODO: don't do this.
+	let contentWindow = xulTab.linkedBrowser.contentWindow;
+	let contentDocument = contentWindow.document;
+	let audio = contentDocument.querySelector("audio");
+
+	audio.play();
+
+	yield wait();
+
+	test.equal(indicator.classList.contains("muted"), false);
+	test.equal(indicator.classList.contains("noisy"), true);
+	test.equal(indicatorStyle.visibility, "visible", "indicator not hidden");
+
+	doClick(indicator);
+	yield wait();
+	test.equal(indicator.classList.contains("muted"), true);
+	test.equal(indicator.classList.contains("noisy"), true);
+	test.equal(indicatorStyle.visibility, "visible", "indicator not hidden");
+
+	audio.pause();
+	yield wait();
+	test.equal(indicator.classList.contains("muted"), true);
+	test.equal(indicator.classList.contains("noisy"), false);
+	test.equal(indicatorStyle.visibility, "collapse", "indicator hidden");
+
+	audio.play();
+	yield wait();
+	test.equal(indicator.classList.contains("muted"), true);
+	test.equal(indicator.classList.contains("noisy"), true);
+	test.equal(indicatorStyle.visibility, "visible", "indicator not hidden");
+
+	audio.currentTime = audio.duration - 0.1;
+	yield wait(500);
+	test.equal(audio.paused, true);
+	test.equal(indicator.classList.contains("muted"), true);
+	test.equal(indicator.classList.contains("noisy"), false);
+	test.equal(indicatorStyle.visibility, "collapse", "indicator hidden");
 
 	tab.close();
 };
@@ -69,10 +125,14 @@ function basicTest(tab, elementSelector, test) {
 
 		let xulTab = viewFor(tab);
 		let chromeDocument = xulTab.ownerDocument;
+		let chromeWindow = chromeDocument.defaultView;
 		let indicator = chromeDocument.getAnonymousElementByAttribute(xulTab, "anonid", "noise-indicator");
+		let indicatorStyle = chromeWindow.getComputedStyle(indicator);
 
 		test.notEqual(indicator, null, "indicator exists");
-		test.notEqual(indicator.getAttribute("collapsed"), "true", "indicator is shown");
+		test.equal(indicator.classList.contains("muted"), false);
+		test.equal(indicator.classList.contains("noisy"), true);
+		test.equal(indicatorStyle.visibility, "visible", "indicator is shown");
 
 		// TODO: don't do this.
 		let contentWindow = xulTab.linkedBrowser.contentWindow;
@@ -83,13 +143,15 @@ function basicTest(tab, elementSelector, test) {
 		doClick(indicator);
 		yield wait();
 		test.equal(indicator.classList.contains("muted"), true);
-		test.notEqual(indicator.getAttribute("collapsed"), "true", "indicator not hidden");
+		test.equal(indicator.classList.contains("noisy"), true);
+		test.equal(indicatorStyle.visibility, "visible", "indicator not hidden");
 		test.equal(video.muted, true);
 
 		doClick(indicator);
 		yield wait();
 		test.equal(indicator.classList.contains("muted"), false);
-		test.notEqual(indicator.getAttribute("collapsed"), "true", "indicator not hidden");
+		test.equal(indicator.classList.contains("noisy"), true);
+		test.equal(indicatorStyle.visibility, "visible", "indicator not hidden");
 		test.equal(video.muted, false);
 
 		doClick(indicator);
@@ -97,7 +159,8 @@ function basicTest(tab, elementSelector, test) {
 		video.muted = false;
 		yield wait();
 		test.equal(indicator.classList.contains("muted"), false);
-		test.notEqual(indicator.getAttribute("collapsed"), "true", "indicator not hidden");
+		test.equal(indicator.classList.contains("noisy"), true);
+		test.equal(indicatorStyle.visibility, "visible", "indicator not hidden");
 
 		tab.close();
 	});

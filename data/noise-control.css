@@ -8,7 +8,6 @@ svg[anonid="noise-indicator"] {
 	visibility: collapse;
 }
 svg[anonid="noise-indicator"].noisy,
-svg[anonid="noise-indicator"].muted,
 svg[anonid="noise-indicator"].plugins {
 	visibility: visible;
 }
