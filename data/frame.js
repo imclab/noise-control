@@ -9,7 +9,7 @@ addEventListener("pause", checkNoise, true);
 addEventListener("volumechange", checkNoise, true);
 addMessageListener("NoiseControl:checkNoise", forceCheckNoise);
 addMessageListener("NoiseControl:checkPlugins", checkPlugins);
-addMessageListener("NoiseControl:mute", muteListener);
+addMessageListener("NoiseControl:setAudioState", audioStateListener);
 addMessageListener("NoiseControl:disable", disableListener);
 checkNoise();
 
@@ -110,19 +110,23 @@ function checkWindowAndFramesForPlugins(win) {
 	);
 }
 
-function muteListener(message) {
-	let muted = message.data;
-	muteWindowAndFrames(content, muted);
+function audioStateListener(message) {
+	let state = message.data;
+	setAudioStateWindowAndFrames(content, state);
 }
 
-function muteWindowAndFrames(win, muted) {
+function setAudioStateWindowAndFrames(win, state) {
 	let utils = win.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
 			.getInterface(Components.interfaces.nsIDOMWindowUtils);
-	utils.audioMuted = muted;
+	if (typeof state == "boolean") {
+		utils.audioMuted = state;
+	} else {
+		utils.audioVolume = state;
+	}
 
 	Array.forEach(
 		win.document.querySelectorAll("iframe"),
-		f => muteWindowAndFrames(f.contentWindow, muted)
+		f => setAudioStateWindowAndFrames(f.contentWindow, state)
 	);
 }
 
@@ -134,6 +138,6 @@ function disableListener()  {
 	removeEventListener("pagehide", checkUnloaded, true);
 	removeEventListener("volumechange", checkNoise, true);
 	removeMessageListener("NoiseControl:checkNoise", forceCheckNoise);
-	removeMessageListener("NoiseControl:mute", muteListener);
+	removeMessageListener("NoiseControl:setAudioState", audioStateListener);
 	removeMessageListener("NoiseControl:disable", disableListener);
 }
