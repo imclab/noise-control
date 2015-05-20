@@ -1,14 +1,12 @@
 /* global addMessageListener, removeMessageListener, sendAsyncMessage, content */
 
-let muting = false;
-let tabMuted = false;
 let previous = false;
 
 addEventListener("emptied", checkNoise, true);
 addEventListener("loadeddata", checkNoise, true);
 addEventListener("play", checkNoise, true);
 addEventListener("pause", checkNoise, true);
-addEventListener("volumechange", checkUnmuted, true);
+addEventListener("volumechange", checkNoise, true);
 addMessageListener("NoiseControl:checkNoise", forceCheckNoise);
 addMessageListener("NoiseControl:checkPlugins", checkPlugins);
 addMessageListener("NoiseControl:mute", muteListener);
@@ -16,9 +14,6 @@ addMessageListener("NoiseControl:disable", disableListener);
 checkNoise();
 
 function checkNoise() {
-	if (muting) {
-		return;
-	}
 	let hasNoise = checkWindowAndFrames(content);
 	if (hasNoise != previous) {
 		sendAsyncMessage("NoiseControl:hasNoise", hasNoise);
@@ -34,24 +29,13 @@ function checkUnloaded(event) {
 	if (targetWindow == targetWindow.top) {
 		sendAsyncMessage("NoiseControl:unloaded");
 		previous = false;
-		tabMuted = false;
 	}
-}
-
-function checkUnmuted(event) {
-	if (tabMuted && !event.target.muted) {
-		sendAsyncMessage("NoiseControl:unmuted");
-		tabMuted = false;
-		previous = true;
-		return;
-	}
-	checkNoise();
 }
 
 function checkWindowAndFrames(win) {
 	let hasMedia = Array.some(
 		win.document.querySelectorAll("audio, video"),
-		v => !v.paused && (!("mozHasAudio" in v) || v.mozHasAudio) && ((v.muted && tabMuted) || !v.muted) && v.volume && !v.error
+		v => !v.paused && (!("mozHasAudio" in v) || v.mozHasAudio) && !v.muted && v.volume && !v.error
 	);
 
 	if (hasMedia) {
@@ -128,13 +112,7 @@ function checkWindowAndFramesForPlugins(win) {
 
 function muteListener(message) {
 	let muted = message.data;
-	muting = true;
 	muteWindowAndFrames(content, muted);
-
-	setTimeout(function() {
-		muting = false;
-		tabMuted = muted;
-	}, 0);
 }
 
 function muteWindowAndFrames(win, muted) {
@@ -154,7 +132,7 @@ function disableListener()  {
 	removeEventListener("play", checkNoise, true);
 	removeEventListener("pause", checkNoise, true);
 	removeEventListener("pagehide", checkUnloaded, true);
-	removeEventListener("volumechange", checkUnmuted, true);
+	removeEventListener("volumechange", checkNoise, true);
 	removeMessageListener("NoiseControl:checkNoise", forceCheckNoise);
 	removeMessageListener("NoiseControl:mute", muteListener);
 	removeMessageListener("NoiseControl:disable", disableListener);
