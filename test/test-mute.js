@@ -52,7 +52,7 @@ exports.testPauseWhileMuted = function*(test) {
 	doClick(indicator);
 	yield wait();
 	test.equal(indicator.classList.contains("muted"), true);
-	test.notEqual(indicator.getAttribute("collapsed"), "true", "indicator not hidden");
+	test.equal(indicatorStyle.visibility, "visible", "indicator not hidden");
 	test.equal(windowUtils.audioMuted, true);
 	test.equal(video1.muted, false);
 	test.equal(video2.muted, false);
@@ -60,7 +60,7 @@ exports.testPauseWhileMuted = function*(test) {
 	video1.pause();
 	yield wait();
 	test.equal(indicator.classList.contains("muted"), true);
-	test.notEqual(indicator.getAttribute("collapsed"), "true", "indicator not hidden");
+	test.equal(indicatorStyle.visibility, "visible", "indicator not hidden");
 	test.equal(windowUtils.audioMuted, true);
 	test.equal(video1.muted, false);
 	test.equal(video2.muted, false);
