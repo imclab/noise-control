@@ -11,9 +11,10 @@ addon.port.on("everything", function(windows) {
 			listItem.setAttribute("id", tab.id);
 			listItem.innerHTML =
 				'<div><img class="tabicon" /><span class="tabtitle"></span></div>' +
-				'<div><label><input type="checkbox" /> Mute</label><input type="range" /></div>';
+				'<div><label><input type="checkbox" /> Mute</label><input type="range" step="5" /></div>';
 			listItem.querySelector("input[type=\"checkbox\"]").onclick = onMuteClick;
 			listItem.querySelector("input[type=\"range\"]").onchange = onVolumeChange;
+			listItem.querySelector("input[type=\"range\"]").onkeyup = onVolumeChangeKey;
 			updateTab(listItem, tab);
 			tabsList.appendChild(listItem);
 		}
@@ -50,6 +51,12 @@ function onVolumeChange() {
 		id: listItem.id,
 		state: this.value / 100
 	});
+}
+
+function onVolumeChangeKey(event) {
+	if (event.keyCode >= 37 && event.keyCode <= 40) {
+		this.onchange();
+	}
 }
 
 function updateTab(listItem, tab) {
