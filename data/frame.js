@@ -13,6 +13,15 @@ addMessageListener("NoiseControl:setAudioState", audioStateListener);
 addMessageListener("NoiseControl:disable", disableListener);
 checkNoise();
 
+if (getUtils(content).audioVolume != 1) {
+	sendAsyncMessage("NoiseControl:volume", getUtils(content).audioVolume);
+}
+
+function getUtils(win) {
+	return win.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+				.getInterface(Components.interfaces.nsIDOMWindowUtils);
+}
+
 function checkNoise() {
 	let hasNoise = checkWindowAndFrames(content);
 	if (hasNoise != previous) {
@@ -116,8 +125,7 @@ function audioStateListener(message) {
 }
 
 function setAudioStateWindowAndFrames(win, state) {
-	let utils = win.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-			.getInterface(Components.interfaces.nsIDOMWindowUtils);
+	let utils = getUtils(win);
 	if (typeof state == "boolean") {
 		utils.audioMuted = state;
 	} else {
