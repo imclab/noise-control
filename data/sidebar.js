@@ -5,20 +5,27 @@ let windowsList = document.getElementById("windows");
 addon.port.on("everything", function(windows) {
 	windowsList.innerHTML = "";
 	for (let tabs of windows) {
+		let windowItem = document.createElement("li");
 		let tabsList = document.createElement("ul");
 		for (let tab of tabs) {
 			let listItem = document.createElement("li");
 			listItem.setAttribute("id", tab.id);
 			listItem.innerHTML =
 				'<div><img class="tabicon" /><span class="tabtitle"></span></div>' +
-				'<div><label><input type="checkbox" /> Mute</label><input type="range" step="5" /></div>';
+				'<div><label><input type="checkbox" /> Mute</label></div>' +
+				'<div>' +
+				'<svg height="16" width="16"><use xlink:href="noisy.svg#base" style="transform: translate(0, -48px)" /></svg>' +
+				'<input type="range" step="5" />' +
+				'<svg height="16" width="16"><use xlink:href="noisy.svg#base" /></svg>' +
+				'</div>';
 			listItem.querySelector("input[type=\"checkbox\"]").onclick = onMuteClick;
 			listItem.querySelector("input[type=\"range\"]").onchange = onVolumeChange;
 			listItem.querySelector("input[type=\"range\"]").onkeyup = onVolumeChangeKey;
 			updateTab(listItem, tab);
 			tabsList.appendChild(listItem);
 		}
-		windowsList.appendChild(tabsList);
+		windowItem.appendChild(tabsList);
+		windowsList.appendChild(windowItem);
 	}
 });
 
@@ -54,7 +61,7 @@ function onVolumeChange() {
 }
 
 function onVolumeChangeKey(event) {
-	if (event.keyCode >= 37 && event.keyCode <= 40) {
+	if ([33, 34, 37, 38, 39, 40].indexOf(event.keyCode) >= 0) {
 		this.onchange();
 	}
 }
