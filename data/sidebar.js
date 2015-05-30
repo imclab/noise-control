@@ -11,12 +11,13 @@ addon.port.on("everything", function(windows) {
 			let listItem = document.createElement("li");
 			listItem.setAttribute("id", tab.id);
 			listItem.innerHTML =
-				'<div><img class="tabicon" /><span class="tabtitle"></span></div>' +
-				'<div><label><input type="checkbox" /> Mute</label></div>' +
-				'<div>' +
-				'<svg height="16" width="16"><use xlink:href="noisy.svg#base" style="transform: translate(0, -48px)" /></svg>' +
-				'<input type="range" step="5" />' +
-				'<svg height="16" width="16"><use xlink:href="noisy.svg#base" /></svg>' +
+				'<div class="tabicon"><img src="defaultFavicon.png" /></div>' +
+				'<div class="tabtitle">hexy.ogg</div>' +
+				'<div class="tabmute"><label><input type="checkbox" /><span class="mutelabel"> Mute</span></label></div>' +
+				'<div class="tabvolume">' +
+					'<svg width="16" height="16"><use style="transform: translate(0, -48px)" xlink:href="noisy.svg#base" /></svg>' +
+					'<input type="range" step="5" />' +
+					'<svg width="16" height="16"><use xlink:href="noisy.svg#base" /></svg>' +
 				'</div>';
 			listItem.querySelector("input[type=\"checkbox\"]").onclick = onMuteClick;
 			listItem.querySelector("input[type=\"range\"]").onchange = onVolumeChange;
@@ -67,7 +68,7 @@ function onVolumeChangeKey(event) {
 }
 
 function updateTab(listItem, tab) {
-	listItem.querySelector(".tabicon").src = tab.icon ? tab.icon : "chrome://mozapps/skin/places/defaultFavicon.png";
+	listItem.querySelector(".tabicon > img").src = tab.icon ? tab.icon : "chrome://mozapps/skin/places/defaultFavicon.png";
 	listItem.querySelector(".tabtitle").textContent = tab.title;
 	listItem.querySelector("input[type=\"checkbox\"]").checked = tab.noisy.indexOf("muted") >= 0;
 	listItem.querySelector("input[type=\"range\"]").value = tab.volume * 100;

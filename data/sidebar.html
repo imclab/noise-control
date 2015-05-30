@@ -1,15 +1,56 @@
 <html>
 <head>
-	<meta charset="utf-8" />
-	<title></title>
-	<style type="text/css">
-	ul {
-		padding: 0;
-	}
-	</style>
+<meta charset="utf-8" />
+<title></title>
+<style type="text/css">
+:root {
+	font: message-box;
+	color: -moz-fieldtext;
+}
+ul {
+	padding: 0;
+	line-height: 16px;
+	list-style: none;
+}
+li + li {
+	margin-top: 4px;
+	border-top: 1px graytext solid;
+	padding-top: 4px;
+}
+.tabicon {
+	padding: 3px 0;
+}
+.tabtitle {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	margin-left: 22px;
+	margin-top: -22px;
+	padding: 3px 0;
+}
+.tabmute,
+.tabvolume {
+	margin-left: 22px;
+	padding: 3px 0;
+	white-space: nowrap;
+}
+input {
+	margin: 0;
+}
+input[type="checkbox"] {
+	-moz-margin-end: 2px;
+	vertical-align: middle;
+}
+.mutelabel {
+	vertical-align: middle;
+}
+use {
+	fill: currentcolor;
+}
+</style>
 </head>
 <body>
-	<ul id="windows"></ul>
-	<script type="application/javascript;version=1.8" src="sidebar.js"></script>
+<ul id="windows"></ul>
+<script type="application/javascript;version=1.8" src="sidebar.js"></script>
 </body>
 </html>
