@@ -1,16 +1,19 @@
 /* global addMessageListener, removeMessageListener, sendAsyncMessage, content */
 
+Components.utils.import("resource://jid1-hubct1dnfzqieq-at-jetpack/noise-control/data/frame.jsm");
+
 let previous = false;
 
-addEventListener("emptied", checkNoise, true);
-addEventListener("loadeddata", checkNoise, true);
-addEventListener("play", checkNoise, true);
-addEventListener("pause", checkNoise, true);
-addEventListener("volumechange", checkNoise, true);
+// addEventListener("emptied", checkNoise, true);
+// addEventListener("loadeddata", checkNoise, true);
+// addEventListener("play", checkNoise, true);
+// addEventListener("pause", checkNoise, true);
+// addEventListener("volumechange", checkNoise, true);
 addMessageListener("NoiseControl:checkNoise", forceCheckNoise);
 addMessageListener("NoiseControl:checkPlugins", checkPlugins);
 addMessageListener("NoiseControl:setAudioState", audioStateListener);
 addMessageListener("NoiseControl:disable", disableListener);
+addMessageListener("NoiseControl:mediaPlayback", checkNoise);
 checkNoise();
 
 function checkNoise() {
@@ -33,10 +36,11 @@ function checkUnloaded(event) {
 }
 
 function checkWindowAndFrames(win) {
-	let hasMedia = Array.some(
-		win.document.querySelectorAll("audio, video"),
-		v => !v.paused && (!("mozHasAudio" in v) || v.mozHasAudio) && !v.muted && v.volume && !v.error
-	);
+	// let hasMedia = Array.some(
+	// 	win.document.querySelectorAll("audio, video"),
+	// 	v => !v.paused && (!("mozHasAudio" in v) || v.mozHasAudio) && !v.muted && v.volume && !v.error
+	// );
+	hasMedia = win._hasNoise;
 
 	if (hasMedia) {
 		let mediaObserver = new win.MutationObserver(onMutation);
@@ -131,13 +135,14 @@ function setAudioStateWindowAndFrames(win, state) {
 }
 
 function disableListener()  {
-	removeEventListener("emptied", checkNoise, true);
-	removeEventListener("loadeddata", checkNoise, true);
-	removeEventListener("play", checkNoise, true);
-	removeEventListener("pause", checkNoise, true);
+	// removeEventListener("emptied", checkNoise, true);
+	// removeEventListener("loadeddata", checkNoise, true);
+	// removeEventListener("play", checkNoise, true);
+	// removeEventListener("pause", checkNoise, true);
 	removeEventListener("pagehide", checkUnloaded, true);
-	removeEventListener("volumechange", checkNoise, true);
+	// removeEventListener("volumechange", checkNoise, true);
 	removeMessageListener("NoiseControl:checkNoise", forceCheckNoise);
 	removeMessageListener("NoiseControl:setAudioState", audioStateListener);
 	removeMessageListener("NoiseControl:disable", disableListener);
+	removeMessageListener("NoiseControl:mediaPlayback", checkNoise);
 }
