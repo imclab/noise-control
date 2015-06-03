@@ -15,10 +15,6 @@ tab[pinned="true"] svg[anonid="noise-indicator"] {
 	-moz-margin-start: -3px !important;
 	-moz-margin-end: 3px !important;
 }
-tab[pinned="true"] svg[anonid="noise-indicator"][fx37] {
-	-moz-margin-start: 3px !important;
-	-moz-margin-end: -3px !important;
-}
 
 /* This selector text is referenced in main.js */
 svg[anonid="noise-indicator"] > use {
